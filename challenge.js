@@ -39,7 +39,7 @@
 
         constructor() {
             const left = `${Helper.getRandomNumber(Enemy.minLeft , Enemy.maxLeft)}%`;
-            const bottom =`100%`;
+            const bottom =`600%`;
             this.element.className = "enemy";
             this.element.style.position = 'absolute';
             this.element.style.left = left;
@@ -47,11 +47,11 @@
         }
 
         animate() {
-            let actualBottomPos = parseInt(this.element.style.bottom.replace("%", ''));
+            let actualBottomPos = parseInt(this.element.style.bottom.replace("px", ''));
             const enemyAction = setInterval(()=> {
                     if (actualBottomPos > Enemy.minBottom) {
                         console.log(actualBottomPos, Enemy.maxBottom);
-                        this.element.style.bottom = actualBottomPos - .3 + "%"; //bullet speed
+                        this.element.style.bottom = actualBottomPos - .5 + "px";
 
                         actualBottomPos = parseInt(this.element.style.bottom.replace("%", ''));
                     } else {
