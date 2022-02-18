@@ -1,0 +1,79 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-family: monospace, serif, Dialog;
+}
+
+#player {
+    width: 64px;
+    height: 64px;
+    background: url(assets/red-player.gif);
+    background-size: cover;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+}
+
+#bullet {
+    position: absolute;
+    right: 0;
+}
+
+#bullets-text, #score-text {
+    color: white;
+    font-size: 22px;
+}
+
+.enemy {
+    width: 7%;
+    height: 12%;
+    background: url(assets/enemy.gif) no-repeat;
+    background-size: contain;
+    position: absolute;
+}
+
+.turn-left {
+    transform: skewx(10deg)
+}
+
+.turn-right {
+    transform: skewx(-10deg)
+}
+
+.bullet.fire {
+    position: absolute;
+    width: 9px;
+    height: 20px;
+    background: url(assets/bullet.png);
+}
+
+#content {
+    position: relative;
+    max-width: 800px;
+    max-height: 600px;
+    height: 600px;
+    margin: 0 auto;
+    background: url("./assets/background.gif") no-repeat;
+    background-size: cover;
+}
+
+#player-name {
+    color: white;
+    position: absolute;
+    bottom: -25px;
+    white-space: nowrap;
+    background: black;
+    border: 1px solid white;
+    font-size: 12px;
+    padding: 2px;
+}
+
+#player-life {
+    height: 5px;
+    width: 64px;
+    background-color: red;
+    color: green;
+    position: absolute;
+    bottom: 0;
+}
