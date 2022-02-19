@@ -116,12 +116,11 @@
                     enemies.map((enemy) => {
                         const bottom = parseInt(enemy.style.bottom.replace("px", ''));
                         const left = parseInt(enemy.style.left.replace("%", ''));
-                        if(Helper.between(actualBottomPos, bottom - 5, bottom + 5) && Helper.between(actualLeftPos, left - 8, left + 8)) {
+                        if(Helper.between(actualBottomPos, bottom - 5, bottom + 5) && Helper.between(actualLeftPos, left - 5, left + 10)) {
                             enemy.className = "kaboom";
                             setTimeout(()=> {
                                 enemy.remove();
                             }, 300);
-
                         }
 
                     });
@@ -158,7 +157,7 @@
 
     bullets.children[0].textContent = player1.bullet;
     const level = 1;
-    let fire_cooldown = false;
+    let fire_cooldown = false; //player fire cooldown
     const keyState = {};
 
     document.addEventListener('keydown',function(e){
@@ -209,7 +208,12 @@
         }
 
         if(playerLife.value <= 0) {
-            window.alert("GAME OVER");
+            player.className = "kaboom";
+            setTimeout(()=> {
+                player.remove();
+                window.alert("GAME OVER");
+            }, 300);
+
         }
 
         player.style.bottom = player1.bottom + "px";
