@@ -68,7 +68,7 @@
             const enemyAction = setInterval(()=> {
                 const playerLeft = parseInt(player.style.left.replace("%", ''));
                 if (actualBottomPos > Enemy.minBottom) {
-                    this.element.style.bottom = actualBottomPos - 1 + "px";
+                    this.element.style.bottom = actualBottomPos - 3 + "px";
                     actualBottomPos = parseInt(this.element.style.bottom.replace("px", ''));
                     if((Helper.between(actualLeftPos, playerLeft - 5, playerLeft + 5)) && (this.fire_cooldown===false)){
                         this.fire_cooldown = true;
@@ -110,11 +110,25 @@
 
         animate(reverse= false){
             let actualBottomPos = parseInt(this.element.style.bottom.replace("%", ''));
-
             const shootAnimation =  setInterval(() => {
                 if ((actualBottomPos <= this.maxBottom) && !reverse) {
                     this.element.style.bottom = actualBottomPos + 2 + "%"; //bullet speed
                     actualBottomPos = parseInt(this.element.style.bottom.replace("%", ''));
+                    const actualLeftPos = parseInt(this.element.style.left.replace("%", ''));
+                    const enemies = Array.from(document.getElementsByClassName("enemy"));
+                    enemies.map((enemy) => {
+                        const bottom = parseInt(enemy.style.bottom.replace("px", ''));
+                        const left = parseInt(enemy.style.left.replace("%", ''));
+
+                        console.log((Helper.between(actualBottomPos, bottom - 15, bottom + 15) && Helper.between(actualLeftPos, left - 15, left + 15)));
+
+
+                        if(Helper.between(actualBottomPos, bottom - 5, bottom + 5) && Helper.between(actualLeftPos, left - 5, left + 5)) {
+                            enemy.remove();
+                        }
+
+                    });
+
                 } else if((actualBottomPos >= this.minBottom) && reverse){
                     this.element.className = "bullet fire reverse";
                     this.element.style.bottom = actualBottomPos - 10 + "px"; //bullet speed
@@ -130,7 +144,7 @@
                     const playerBottom = parseInt(player.style.bottom.replace("%", ''));
                     const actualLeftPos = parseInt(this.element.style.left.replace("%", ''));
 
-                    if(Helper.between(actualLeftPos, playerLeft - 2, playerLeft + 8) && (Helper.between(actualBottomPos, playerBottom - 5, playerBottom + 5))){
+                    if(Helper.between(actualLeftPos, playerLeft -1, playerLeft + 8) && (Helper.between(actualBottomPos, playerBottom - 5, playerBottom + 5))){
                         this.element.style.display = "none";
                         playerLife.value = playerLife.value - 26;
                         this.element.remove();
@@ -162,7 +176,7 @@
         const enemy = new Enemy();
         enemy.animate(player);
         content.insertBefore(enemy.element, player);
-        setTimeout(enemiesSpawn, 5000);
+        setTimeout(enemiesSpawn, 5000);//enemy spawn speed
     }
 
     function gameLoop() {
