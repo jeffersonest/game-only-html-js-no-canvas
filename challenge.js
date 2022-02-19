@@ -1,4 +1,7 @@
 (()=>{
+    const content = document.getElementById('content');
+    const player = document.getElementById('player');
+    const bullets = document.getElementById('bullets-text');
 
     class Helper {
         static getRandomNumber(min, max) {
@@ -35,7 +38,9 @@
         static maxLeft = 91;
         static minBottom = 0;
         static maxBottom = 88; //88
+        fire_cooldown = false;
         element = document.createElement("div");
+
 
         constructor() {
             const left = `${Helper.getRandomNumber(Enemy.minLeft , Enemy.maxLeft)}%`;
@@ -46,20 +51,32 @@
             this.element.style.bottom = bottom;
         }
 
+        fire(bottom, left){
+            const fire = new Bullet({left: left+3, bottom: bottom+5 }, "px");
+            content.insertBefore(fire.element, this.element);
+            fire.animate(true);
+        }
+
         animate() {
             let actualBottomPos = parseInt(this.element.style.bottom.replace("px", ''));
+            let actualLeftPos = parseInt(this.element.style.left.replace("%", ''));
             const enemyAction = setInterval(()=> {
-                    if (actualBottomPos > Enemy.minBottom) {
-                        console.log(actualBottomPos, Enemy.maxBottom);
-                        this.element.style.bottom = actualBottomPos - .5 + "px";
-
-                        actualBottomPos = parseInt(this.element.style.bottom.replace("%", ''));
-                    } else {
-                        this.element.remove();
-                        clearInterval(enemyAction);
+                const playerLeft = parseInt(player.style.left.replace("%", ''));
+                if (actualBottomPos > Enemy.minBottom) {
+                    this.element.style.bottom = actualBottomPos - 1 + "px";
+                    actualBottomPos = parseInt(this.element.style.bottom.replace("px", ''));
+                    if((actualLeftPos === playerLeft) && (this.fire_cooldown===false)){
+                        this.fire_cooldown = true;
+                        this.fire(actualBottomPos, actualLeftPos);
+                        setTimeout(() => {
+                            this.fire_cooldown = false;
+                        }, (1000)); //Fire cooldown
                     }
-            })
-
+                } else {
+                    this.element.remove();
+                    clearInterval(enemyAction);
+                }
+            }, 10)
         }
 
     }
@@ -72,21 +89,30 @@
         element = document.createElement("div");
         shootSound = new Audio("../assets/pew.wav");
 
-        constructor(position) {
+        constructor(position, positionType) {
             this.element.className = "bullet fire";
-            this.element.style.left = position.left + "%";
-            this.element.style.bottom = position.bottom + "%";
+            if(positionType === "%"){
+                this.element.style.left = position.left + "%";
+                this.element.style.bottom = position.bottom + "%";
+            } else {
+                this.element.style.left = position.left + "%";
+                this.element.style.bottom = position.bottom + "px";
+            }
             this.left = position.left;
             this.bottom = position.bottom;
-            this.shootSound.play().then();
+            this.shootSound.play();
         }
 
-        animate(){
+        animate(reverse= false){
             let actualBottomPos = parseInt(this.element.style.bottom.replace("%", ''));
             const shootAnimation =  setInterval(() => {
-                if (actualBottomPos <= this.maxBottom) {
+                if ((actualBottomPos <= this.maxBottom) && !reverse) {
                     this.element.style.bottom = actualBottomPos + 2 + "%"; //bullet speed
                     actualBottomPos = parseInt(this.element.style.bottom.replace("%", ''));
+                } else if((actualBottomPos >= this.minBottom) && reverse){
+                    this.element.className = "bullet fire reverse";
+                    this.element.style.bottom = actualBottomPos - 10 + "px"; //bullet speed
+                    actualBottomPos = parseInt(this.element.style.bottom.replace("px", ''));
                 } else {
                     this.shootSound.pause();
                     this.element.remove();
@@ -96,11 +122,9 @@
         }
     }
 
-    const content = document.getElementById('content');
-    const player = document.getElementById('player');
     const key = new Controls();
     const player1 = new Player();
-    const bullets = document.getElementById('bullets-text');
+
     bullets.children[0].textContent = player1.bullet;
     const level = 1;
     let fire_cooldown = false;
@@ -114,11 +138,11 @@
         keyState[e.keyCode || e.which] = false;
     },true);
 
-    function enemiesSpawn() {
+    function enemiesSpawn(player) {
         const enemy = new Enemy();
-        enemy.animate();
+        enemy.animate(player);
         content.insertBefore(enemy.element, player);
-        setTimeout(enemiesSpawn, 2000);
+        setTimeout(enemiesSpawn, 5000);
     }
 
     function gameLoop() {
@@ -143,7 +167,7 @@
                 fire_cooldown = true
                 player1.bullet -= 1;
                 bullets.children[0].textContent = player1.bullet;
-                const fire = new Bullet({left: player1.left + 3.4 , bottom: player1.bottom + 5});
+                const fire = new Bullet({left: player1.left + 3.4 , bottom: player1.bottom + 5}, "%");
                 if(player1.bottom >= player1.minBottom) player1.bottom-=0.5
                 content.insertBefore(fire.element, player);
                 fire.animate();

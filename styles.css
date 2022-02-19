@@ -8,7 +8,7 @@
 #player {
     width: 64px;
     height: 64px;
-    background: url(assets/red-player.gif);
+    background: url(assets/blue-player.gif);
     background-size: cover;
     position: absolute;
     bottom: 0;
@@ -46,6 +46,13 @@
     width: 9px;
     height: 20px;
     background: url(assets/bullet.png);
+}
+
+.bullet.fire.reverse {
+    position: absolute;
+    width: 9px;
+    height: 20px;
+    background: url(assets/bullet-reverse.png);
 }
 
 #content {
