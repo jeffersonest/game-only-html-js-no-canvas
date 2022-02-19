@@ -2,12 +2,17 @@
     const content = document.getElementById('content');
     const player = document.getElementById('player');
     const bullets = document.getElementById('bullets-text');
+    const playerLife = document.getElementById('player-life');
 
     class Helper {
         static getRandomNumber(min, max) {
             min = Math.ceil(min);
             max = Math.floor(max);
             return Math.floor(Math.random() * (max - min)) + min;
+        }
+
+        static between(x, min, max) {
+            return x >= min && x <= max;
         }
     }
 
@@ -65,7 +70,7 @@
                 if (actualBottomPos > Enemy.minBottom) {
                     this.element.style.bottom = actualBottomPos - 1 + "px";
                     actualBottomPos = parseInt(this.element.style.bottom.replace("px", ''));
-                    if((actualLeftPos === playerLeft) && (this.fire_cooldown===false)){
+                    if((Helper.between(actualLeftPos, playerLeft - 5, playerLeft + 5)) && (this.fire_cooldown===false)){
                         this.fire_cooldown = true;
                         this.fire(actualBottomPos, actualLeftPos);
                         setTimeout(() => {
@@ -105,6 +110,7 @@
 
         animate(reverse= false){
             let actualBottomPos = parseInt(this.element.style.bottom.replace("%", ''));
+
             const shootAnimation =  setInterval(() => {
                 if ((actualBottomPos <= this.maxBottom) && !reverse) {
                     this.element.style.bottom = actualBottomPos + 2 + "%"; //bullet speed
@@ -118,7 +124,21 @@
                     this.element.remove();
                     clearInterval(shootAnimation);
                 }
-            }, 10);
+
+                if(reverse) {
+                    const playerLeft = parseInt(player.style.left.replace("%", ''));
+                    const playerBottom = parseInt(player.style.bottom.replace("%", ''));
+                    const actualLeftPos = parseInt(this.element.style.left.replace("%", ''));
+
+                    if(Helper.between(actualLeftPos, playerLeft - 2, playerLeft + 8) && (Helper.between(actualBottomPos, playerBottom - 5, playerBottom + 5))){
+                        this.element.style.display = "none";
+                        playerLife.value = playerLife.value - 26;
+                        this.element.remove();
+                        clearInterval(shootAnimation);
+                    }
+                }
+            }, 10 );
+
         }
     }
 
@@ -177,6 +197,9 @@
             }
         }
 
+        if(playerLife.value <= 0) {
+            window.alert("GAME OVER");
+        }
 
         player.style.bottom = player1.bottom + "%";
         player.style.left = player1.left +  "%";

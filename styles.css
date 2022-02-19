@@ -74,11 +74,12 @@
     border: 1px solid white;
     font-size: 12px;
     padding: 2px;
+    width: 100%;
 }
 
 #player-life {
     height: 5px;
-    width: 64px;
+    width: 100%;
     background-color: red;
     color: green;
     position: absolute;
