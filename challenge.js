@@ -20,7 +20,7 @@
         minLeft = 2;
         maxLeft = 91;
         minBottom = 2;
-        maxBottom = 48; //88
+        maxBottom = 400; //88
         health = 100;
         bullet = 100;
         score = 0;
@@ -90,41 +90,38 @@
         minLeft = 2;
         maxLeft = 91;
         minBottom = 2;
-        maxBottom = 88;
+        maxBottom = 600;
         element = document.createElement("div");
         shootSound = new Audio("../assets/pew.wav");
 
-        constructor(position, positionType) {
+        constructor(position) {
             this.element.className = "bullet fire";
-            if(positionType === "%"){
-                this.element.style.left = position.left + "%";
-                this.element.style.bottom = position.bottom + "%";
-            } else {
-                this.element.style.left = position.left + "%";
-                this.element.style.bottom = position.bottom + "px";
-            }
+
+            this.element.style.left = position.left + "%";
+            this.element.style.bottom = position.bottom + "px";
+
             this.left = position.left;
             this.bottom = position.bottom;
             this.shootSound.play();
         }
 
         animate(reverse= false){
-            let actualBottomPos = parseInt(this.element.style.bottom.replace("%", ''));
+            let actualBottomPos = parseInt(this.element.style.bottom.replace("px", ''));
             const shootAnimation =  setInterval(() => {
                 if ((actualBottomPos <= this.maxBottom) && !reverse) {
-                    this.element.style.bottom = actualBottomPos + 2 + "%"; //bullet speed
-                    actualBottomPos = parseInt(this.element.style.bottom.replace("%", ''));
+                    this.element.style.bottom = actualBottomPos + 10 + "px"; //bullet speed
+                    actualBottomPos = parseInt(this.element.style.bottom.replace("px", ''));
                     const actualLeftPos = parseInt(this.element.style.left.replace("%", ''));
                     const enemies = Array.from(document.getElementsByClassName("enemy"));
                     enemies.map((enemy) => {
                         const bottom = parseInt(enemy.style.bottom.replace("px", ''));
                         const left = parseInt(enemy.style.left.replace("%", ''));
+                        if(Helper.between(actualBottomPos, bottom - 5, bottom + 5) && Helper.between(actualLeftPos, left - 8, left + 8)) {
+                            enemy.className = "kaboom";
+                            setTimeout(()=> {
+                                enemy.remove();
+                            }, 300);
 
-                        console.log((Helper.between(actualBottomPos, bottom - 15, bottom + 15) && Helper.between(actualLeftPos, left - 15, left + 15)));
-
-
-                        if(Helper.between(actualBottomPos, bottom - 5, bottom + 5) && Helper.between(actualLeftPos, left - 5, left + 5)) {
-                            enemy.remove();
                         }
 
                     });
@@ -183,9 +180,9 @@
         player.className = "";
         //Controls
         if (keyState[key.down]){
-            if(player1.bottom >= player1.minBottom) player1.bottom-=2
+            if(player1.bottom >= player1.minBottom) player1.bottom-=15
         } else if (keyState[key.up]){
-            if(player1.bottom <= player1.maxBottom) player1.bottom+=2
+            if(player1.bottom <= player1.maxBottom) player1.bottom+=15
         } else if (keyState[key.left]){
             if(player1.left >= player1.minLeft) {
                 player1.left-=2
@@ -201,7 +198,7 @@
                 fire_cooldown = true
                 player1.bullet -= 1;
                 bullets.children[0].textContent = player1.bullet;
-                const fire = new Bullet({left: player1.left + 3.4 , bottom: player1.bottom + 5}, "%");
+                const fire = new Bullet({left: player1.left + 3.4 , bottom: player1.bottom + 5}, );
                 if(player1.bottom >= player1.minBottom) player1.bottom-=0.5
                 content.insertBefore(fire.element, player);
                 fire.animate();
@@ -215,7 +212,7 @@
             window.alert("GAME OVER");
         }
 
-        player.style.bottom = player1.bottom + "%";
+        player.style.bottom = player1.bottom + "px";
         player.style.left = player1.left +  "%";
 
         setTimeout(gameLoop, 30);

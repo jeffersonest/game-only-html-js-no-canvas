@@ -77,6 +77,14 @@
     width: 100%;
 }
 
+.kaboom {
+    width: 7%;
+    height: 12%;
+    background: url(assets/explosion.gif) no-repeat;
+    background-size: contain;
+    position: absolute;
+}
+
 #player-life {
     height: 5px;
     width: 100%;
